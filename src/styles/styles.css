@@ -1,0 +1,134 @@
+body {
+    @font-face {
+        font-family: "Roboto" !important;
+    }
+}
+
+/* Background colors */
+.bg-yellow {
+    background-color: #F6CA65 !important;
+}
+
+.bg-lightblue {
+    background-color: #F1FAFE !important;
+}
+
+/* Text Colors */
+.text-gray {
+    color: #7E8299 !important;
+}
+
+.text-blue-600 {
+    color: #005B96 !important;
+}
+
+.text-blue-900 {
+    color: #011F4B !important;
+}
+
+/* Button colors */
+.btn-green {
+    background-color: #1BC5BD !important;
+}
+
+.btn-blue {
+    background-color: #005B96 !important;
+}
+
+.btn-blue:hover {
+    background-color: #013c63 !important;
+}
+
+/* Font */
+.fs-sm {
+    font-size: 14px !important;
+}
+
+.fw-700 {
+    font-weight: 700 !important;
+}
+
+/* Widths */
+.width-50 {
+    min-width: 45vw !important;
+}
+
+.width-100 {
+    min-width: 90vw !important;
+}
+
+/* Borders */
+.rounded-more {
+    border-radius: 5px !important;
+}
+
+.rounded-10 {
+    border-radius: 10px !important;
+}
+
+/* Elements */
+.btn {
+    white-space: nowrap;
+    text-align: center;
+ }
+
+ .w-sqare-sm {
+    max-width: 32px;
+    background-color: transparent;
+    margin-left: -10px !important;
+    cursor: pointer !important;
+ }
+
+ .w-sqare-sm:focus {
+    outline: none;
+ }
+
+ .w-sqare-sm::before {
+    content: "\0022" !important;
+    color: #011F4B !important;
+ }
+
+.username-rectangle {
+    width: 43px !important;
+    height: 43px !important;
+}
+
+.sidebar {
+    max-width: 3rem !important;
+}
+
+.no-data {
+    top: 200px !important;
+}
+
+.no-data-img {
+    width: 402.5px;
+    height: 171.71px;
+}
+
+.form-sm {
+    max-height: 32px;
+}
+/* Table styling */
+
+table,
+thead,
+tbody,
+tfoot,
+tr,
+th,
+td {
+    padding: 0;
+    border-spacing: 0;
+    border: 0 !important;
+    font-weight: 300 !important;
+    color: #011F4B
+}
+
+tr:nth-child(even) {
+    background-color: #ffffff ;
+}
+
+thead {
+    background: #ffffff !important;
+}
