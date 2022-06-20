@@ -28,9 +28,9 @@ export default function Table({project, single=false}) {
   }
 
   return (
-    <div className="accordion-item mt-2 rounded-10 border-0" key={project.projectId}>
-      <h2 className="accordion-header" id={`flush-headint${project.projectId}`}>
-        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapse${project.projectId}`} aria-expanded="false" aria-controls={`flush-collapse${project.projectId}`}>
+    <div className="accordion-item mt-2 rounded-10 border-0" key={project.projectId ? project.projectId : project.gatewayId}>
+      <h2 className="accordion-header" id={`flush-headint${project.projectId ? project.projectId : project.gatewayId}`}>
+        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapse${project.projectId ? project.projectId : project.gatewayId}`} aria-expanded="false" aria-controls={`flush-collapse${project.projectId ? project.projectId : project.gatewayId}`}>
           <div className="d-flex justify-content-between fw-700 text-blue-900 p-2 w-100">
             <span>
               { project.name }
@@ -41,7 +41,7 @@ export default function Table({project, single=false}) {
           </div>
         </button>
       </h2>
-      <div id={`flush-collapse${project.projectId}`} className="accordion-collapse collapse bg-lightblue" aria-labelledby={`flush-headint${project.projectId}`} data-bs-parent="#accordionFlushExample">
+      <div id={`flush-collapse${project.projectId ? project.projectId : project.gatewayId}`} className="accordion-collapse collapse bg-lightblue" aria-labelledby={`flush-headint${project.projectId ? project.projectId : project.gatewayIdgit}`} data-bs-parent="#accordionFlushExample">
         <div className="accordion-body">
           <table className="table table-hover table-sm">
             <thead className="thead-light">

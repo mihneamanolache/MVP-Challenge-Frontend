@@ -10,7 +10,7 @@ import { PieChart } from 'react-minimal-pie-chart';
 import { PIECHART_LABEL_STYLE, PIECHART_STYLE } from '../utils/constants';
 
 export default function Home() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState()
   
   const [displayNoData, setDisplayNoData] = useState(true)
   const [displayProjects, setDisplayProjects] = useState(false)
