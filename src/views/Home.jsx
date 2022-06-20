@@ -10,6 +10,8 @@ import { PieChart } from 'react-minimal-pie-chart';
 import { PIECHART_LABEL_STYLE, PIECHART_STYLE } from '../utils/constants';
 
 export default function Home() {
+  const [loading, setLoading] = useState(false)
+  
   const [displayNoData, setDisplayNoData] = useState(true)
   const [displayProjects, setDisplayProjects] = useState(false)
   const [displayGateways, setDisplayGateways] = useState(false)
@@ -39,11 +41,13 @@ export default function Home() {
 
   const getProjects = async () => {
     try {
+      setLoading(true)
       let response = await fetchData('projects')
       setProjectsList(response.data)
       setProjectsButton(response.data.map((project) => 
           <option value={project.projectId}>{project.name}</option>
         ))
+      setLoading(false)
     } catch (err) {
       console.log(err)
     }
@@ -51,11 +55,13 @@ export default function Home() {
 
   const getGetaways = async () => {
     try {
+      setLoading(true)
       let response = await fetchData('gateways')
       setGatewaysList(response.data)
       setGatewaysBtn(response.data.map((gateway) => 
         <option value={gateway.gatewayId}>{gateway.name}</option>
       ))
+      setLoading(false)
     } catch (err) {
       console.log(err)
     }
@@ -92,6 +98,7 @@ export default function Home() {
     if ( projectId === null || gatewayId === null || fromDate === null || toDate === null ) {
       setWarning(true)
     } else {
+      setLoading(true)
       let response = await fetchGrouped(fromDate, toDate, projectId, gatewayId)
       if ( projectId === '' && gatewayId === '' ) {
         setTotalTitle('TOTAL')
@@ -129,8 +136,6 @@ export default function Home() {
         setTotalTitle('GATEWAY TOTAL')
         response.projects.forEach(project => totalAmount += Number(project.totalAmount))
         response.projects.forEach(project => {
-          console.log(totalAmount)
-          console.log(`${project.name}: ${project.totalAmount}`)
           setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={project} />])
           let data = {
             title: project.name,
@@ -143,12 +148,13 @@ export default function Home() {
       setProjectsTotal(totalAmount.toFixed(2))
       setDisplayNoData(false)
       setDisplayProjects(true)
+      setLoading(false)
     }
   }
 
   return (
     <>
-        <Page> 
+        <Page loading={loading}> 
           <div className="d-flex justify-content-between">
             <div className="container">
               <h4 className="p-0 m-0 fs-bolder text-blue-900">
