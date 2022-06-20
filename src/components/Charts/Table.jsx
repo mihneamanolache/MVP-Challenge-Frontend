@@ -1,6 +1,32 @@
 import React from 'react'
 
-export default function Table({project}) {
+export default function Table({project, single=false}) {
+
+  if ( single ) {
+    return (
+      <table className="table table-hover table-sm mt-5">
+        <thead className="thead-light">
+          <tr key="head">
+            <th scope="col">Date</th>
+            <th scope="col">Gateaway</th>
+            <th scope="col">Transaction ID</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          { project.transactions.map((transaction) => 
+            <tr key={transaction.paymentId}>
+              <th>{transaction.created}</th>
+              <th>{transaction.gatewayName}</th>
+              <th>{transaction.paymentId}</th>
+              <th>{transaction.amount}</th>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    )
+  }
+
   return (
     <div className="accordion-item mt-2 rounded-10 border-0" key={project.projectId}>
       <h2 className="accordion-header" id={`flush-headint${project.projectId}`}>
@@ -36,7 +62,6 @@ export default function Table({project}) {
                 </tr>
               )}
             </tbody>
-            
           </table>
         </div>
       </div>

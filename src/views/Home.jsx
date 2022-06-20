@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import Table from '../components/Charts/Table'
 import NoData from '../components/Templates/NoData'
 import Page from '../components/Templates/Page'
-import { fetchGateways, fetchGrouped, fetchProjects } from '../utils/api'
+import { fetchData, fetchGateways, fetchGrouped, fetchProjects } from '../utils/api'
 import "react-datepicker/dist/react-datepicker.css";
 import { findGatewayById, findProjectById } from '../utils/helpers';
 import { PieChart } from 'react-minimal-pie-chart';
@@ -24,8 +24,11 @@ export default function Home() {
   const [fromDate, setFromDate]   = useState('From date')
   const [toDate, setToDate]       = useState('To Date')
 
+  const [warning, setWarning] = useState(false)
+
   const [projectName, setProjectName] = useState('Select project')
   const [gatewayName, setGatewayName] = useState('Select gateway')
+  const [totalTitle, setTotalTitle]   = useState('TOTAL')
 
   const [projectsBnt, setProjectsButton]  = useState(null)
   const [gatewaysBtn, setGatewaysBtn]     = useState(null)
@@ -36,7 +39,7 @@ export default function Home() {
 
   const getProjects = async () => {
     try {
-      let response = await fetchProjects()
+      let response = await fetchData('projects')
       setProjectsList(response.data)
       setProjectsButton(response.data.map((project) => 
           <option value={project.projectId}>{project.name}</option>
@@ -48,7 +51,7 @@ export default function Home() {
 
   const getGetaways = async () => {
     try {
-      let response = await fetchGateways()
+      let response = await fetchData('gateways')
       setGatewaysList(response.data)
       setGatewaysBtn(response.data.map((gateway) => 
         <option value={gateway.gatewayId}>{gateway.name}</option>
@@ -79,42 +82,66 @@ export default function Home() {
   }
 
   const showReport = async () => {
+
     var totalAmount = 0
     setProjectsAccordion([])
     setPieChartData([])
     setDisplayGateways(false)
-    let response = await fetchGrouped(fromDate, toDate, projectId, gatewayId)
+    setWarning(false)
 
-    if ( projectId !== '' && gatewayId === '' ) {
-      setDisplayGateways(true)
-      response.gateways.forEach(gateway => {
-        totalAmount += Number(gateway.totalAmount)
-        setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={gateway} />])
-        let data = {
-          title: gateway.name,
-          value: (Number(gateway.totalAmount) / totalAmount)*100,
-          color: `#${Math.floor(Math.random()*16777215).toString(16)}`
-        }
-        setPieChartData(pieChartData => [...pieChartData, data])
-      });
-    }
+    if ( projectId === null || gatewayId === null || fromDate === null || toDate === null ) {
+      setWarning(true)
+    } else {
+      let response = await fetchGrouped(fromDate, toDate, projectId, gatewayId)
+      if ( projectId === '' && gatewayId === '' ) {
+        setTotalTitle('TOTAL')
+        response.projects.forEach(project => {
+          totalAmount += Number(project.totalAmount)
+          setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={project}/>])
+        });
+      }
 
-    if ( projectId === '' && gatewayId !== '' ) {
-      setDisplayGateways(true)
-      response.projects.forEach(project => {
-        totalAmount += Number(project.totalAmount)
-        setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={project} />])
-        let data = {
-          title: project.name,
-          value: (Number(project.totalAmount) / totalAmount)*100,
-          color: `#${Math.floor(Math.random()*16777215).toString(16)}`
-        }
-        setPieChartData(pieChartData => [...pieChartData, data])
-      });
+      if ( projectId !== '' && gatewayId !== '' ) {
+        setTotalTitle('TOTAL')
+        response.projects.forEach(project => {
+          totalAmount += Number(project.totalAmount)
+          setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={project} single={true}/>])
+        });
+      }
+
+      if ( projectId !== '' && gatewayId === '' ) {
+        setDisplayGateways(true)
+        setTotalTitle('PROJECT TOTAL')
+        response.gateways.forEach(gateway => {
+          totalAmount += Number(gateway.totalAmount)
+          setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={gateway} />])
+          let data = {
+            title: gateway.name,
+            value: (Number(gateway.totalAmount) / totalAmount)*100,
+            color: `#${Math.floor(Math.random()*16777215).toString(16)}`
+          }
+          setPieChartData(pieChartData => [...pieChartData, data])
+        });
+      }
+      
+      if ( projectId === '' && gatewayId !== '' ) {
+        setDisplayGateways(true)
+        setTotalTitle('GATEWAY TOTAL')
+        response.projects.forEach(project => {
+          totalAmount += Number(project.totalAmount)
+          setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={project} />])
+          let data = {
+            title: project.name,
+            value: (Number(project.totalAmount) / totalAmount)*100,
+            color: `#${Math.floor(Math.random()*16777215).toString(16)}`
+          }
+          setPieChartData(pieChartData => [...pieChartData, data])
+        });
+      }
+      setProjectsTotal(totalAmount.toFixed(2))
+      setDisplayNoData(false)
+      setDisplayProjects(true)
     }
-    setProjectsTotal(totalAmount.toFixed(2))
-    setDisplayNoData(false)
-    setDisplayProjects(true)
   }
 
   return (
@@ -133,7 +160,7 @@ export default function Home() {
 
               {/* Projects Dropdown */}
               <select 
-                className="btn btn-green text-white dropdown-toggle form-sm me-4 fs-sm" 
+                className={`btn btn-${warning ? 'warning' : 'green'} text-white dropdown-toggle form-sm me-4 fs-sm`} 
                 aria-label="Select project"
                 value={projectId}
                 onChange={selectProject}
@@ -145,7 +172,7 @@ export default function Home() {
 
               {/* Gateways Dropdown */}
               <select 
-                className="btn btn-green text-white dropdown-toggle form-sm me-4 fs-sm" 
+                className={`btn btn-${warning ? 'warning' : 'green'} text-white dropdown-toggle form-sm me-4 fs-sm`} 
                 aria-label="Select project"
                 value={gatewayId}
                 onChange={selectGateway}
@@ -156,7 +183,7 @@ export default function Home() {
               </select>
 
               {/* Date pickers */}
-              <div className='btn btn-green text-white dropdown-toggle form-sm me-4 fs-sm'>
+              <div className={`btn btn-${warning ? 'warning' : 'green'} text-white dropdown-toggle form-sm me-4 fs-sm`}>
                 {fromDate}
                 <DatePicker 
                   onChange={(date) => setFromDate(String(date.toISOString().split('T')[0]))} 
@@ -164,7 +191,7 @@ export default function Home() {
                 />
               </div>
 
-              <div className='btn btn-green text-white dropdown-toggle form-sm me-4 fs-sm'>
+              <div className={`btn btn-${warning ? 'warning' : 'green'} text-white dropdown-toggle form-sm me-4 fs-sm`}>
                 {toDate}
                 <DatePicker 
                   onChange={(date) => setToDate(String(date.toISOString().split('T')[0]))} 
@@ -199,7 +226,7 @@ export default function Home() {
               </div>
             </div>
             <div className={`${displayGateways ? 'd-none' : 'd-block'} rounded-more p-3 bg-lightblue mt-4`}>
-                <span className="text-blue-900">TOTAL: {projectsTotal} USD</span> 
+                <span className="text-blue-900 fw-bolder">{totalTitle}: {projectsTotal} USD</span> 
             </div>
           </div>
           <div className={`${displayGateways ? 'd-block' : 'd-none'} text-blue-900 fw-700 mt-3 mb-3 me-2 ${displayGateways ? 'width-50' : 'width-100'}`} >
@@ -224,7 +251,7 @@ export default function Home() {
                 data={pieChartData}
               />
               <div className={`${displayProjects ? 'd-block' : 'd-none'} rounded-more p-3 bg-lightblue mt-4`}>
-                TOTAL: {projectsTotal} USD
+                {totalTitle}: {projectsTotal} USD
               </div>
           </div>
           </div>

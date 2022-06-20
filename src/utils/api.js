@@ -2,6 +2,16 @@ import axios from "axios";
 import { BASE_API_URL } from "./constants";
 import { searchGateway } from "./helpers";
 
+export const fetchData = async (endpoint) => {
+    try {
+        let response = await axios.get(BASE_API_URL + '/' + endpoint)
+        return response.data
+    } catch ( err ) {
+        throw err
+    }
+
+}
+
 export const fetchProjects = async () => {
     try {
         let response = await axios.get(BASE_API_URL + '/projects')

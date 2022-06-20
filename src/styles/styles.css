@@ -81,11 +81,14 @@ body {
 
  .w-sqare-sm:focus {
     outline: none;
+    content: "+!" !important;
  }
 
- .w-sqare-sm::before {
-    content: "\0022" !important;
-    color: #011F4B !important;
+ .react-datepicker-wrapper::before {
+    margin-left: 15px !important;
+    margin-right: -35px !important;
+    content: "\2752" !important;
+    color: #ffffff !important;
  }
 
 .username-rectangle {
