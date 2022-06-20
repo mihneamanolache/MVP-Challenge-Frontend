@@ -110,9 +110,6 @@ export const fetchGrouped = async (from, to, projectId, gatewayId) => {
         gateway.transactions = transactions
         gateway.totalAmount = totalAmount.toFixed(2)
     })
-
-    console.log(response)
-
     return response
 }
 

@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import Table from '../components/Charts/Table'
 import NoData from '../components/Templates/NoData'
 import Page from '../components/Templates/Page'
-import { fetchData, fetchGateways, fetchGrouped, fetchProjects } from '../utils/api'
+import { fetchData, fetchGrouped } from '../utils/api'
 import "react-datepicker/dist/react-datepicker.css";
 import { findGatewayById, findProjectById } from '../utils/helpers';
 import { PieChart } from 'react-minimal-pie-chart';
@@ -112,8 +112,8 @@ export default function Home() {
       if ( projectId !== '' && gatewayId === '' ) {
         setDisplayGateways(true)
         setTotalTitle('PROJECT TOTAL')
+        response.projects.forEach(gateway => totalAmount += Number(gateway.totalAmount))
         response.gateways.forEach(gateway => {
-          totalAmount += Number(gateway.totalAmount)
           setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={gateway} />])
           let data = {
             title: gateway.name,
@@ -127,8 +127,10 @@ export default function Home() {
       if ( projectId === '' && gatewayId !== '' ) {
         setDisplayGateways(true)
         setTotalTitle('GATEWAY TOTAL')
+        response.projects.forEach(project => totalAmount += Number(project.totalAmount))
         response.projects.forEach(project => {
-          totalAmount += Number(project.totalAmount)
+          console.log(totalAmount)
+          console.log(`${project.name}: ${project.totalAmount}`)
           setProjectsAccordion(projectsAccordion => [...projectsAccordion, <Table project={project} />])
           let data = {
             title: project.name,
