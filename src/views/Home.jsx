@@ -225,8 +225,10 @@ export default function Home() {
                 { projectsAccordion }
               </div>
             </div>
-            <div className={`${displayGateways ? 'd-none' : 'd-block'} rounded-more p-3 bg-lightblue mt-4`}>
-                <span className="text-blue-900 fw-bolder">{totalTitle}: {projectsTotal} USD</span> 
+            <div className={`${displayProjects ? 'd-block' : 'd-none'}`} >
+              <div className={`${displayGateways ? 'd-none' : 'd-block'} rounded-more p-3 bg-lightblue mt-4`}>
+                  <span className="text-blue-900 fw-bolder">{totalTitle}: {projectsTotal} USD</span> 
+              </div>
             </div>
           </div>
           <div className={`${displayGateways ? 'd-block' : 'd-none'} text-blue-900 fw-700 mt-3 mb-3 me-2 ${displayGateways ? 'width-50' : 'width-100'}`} >
